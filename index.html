@@ -761,7 +761,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:64px 60px
 ═══════════════════════════════════════════════════ */
 
 function getGeminiUrl(modelId, apiKey) {
-  return `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  return `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${encodeURIComponent(apiKey)}`;
 }
 
 async function callGemini(modelId, body) {
