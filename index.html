@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StreamVibe — Live TV · AI Ad Studio · ShopLive Auctions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* ─── ROOT ─────────────────────────────────────────────────────────── */
+:root {
+  --bg:#060709; --surface:#0d1016; --surface2:#141820; --surface3:#1b2130;
+  --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.14);
+  --accent:#ff5a1f; --accent2:#ff8c4b; --accent3:#ffc09b;
+  --red:#ff3535; --green:#1ecc6e; --blue:#3d9bff; --purple:#9655dc;
+  --text:#eeeeed; --muted:#7b7e87;
+  --google:#4285f4; --meta:#0064e0; --mistral:#ff7000; --openai:#10a37f; --deepseek:#5046e4;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;line-height:1.6;}
+a,button,input{transition:outline-color .2s, box-shadow .2s;}
+a:focus-visible,button:focus-visible,input:focus-visible{
+  outline:2px solid rgba(255,140,75,.9);
+  outline-offset:3px;
+  box-shadow:0 0 0 4px rgba(255,90,31,.14);
+}
+
+/* ─── NAV ────────────────────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;height:60px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 36px;
+  background:rgba(6,7,9,.95);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:9px;letter-spacing:-.5px;flex-shrink:0;}
+.logo-box{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;}
+.nav-center{display:flex;align-items:center;gap:2px;position:absolute;left:50%;transform:translateX(-50%);}
+.nav-link{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;padding:6px 14px;border-radius:8px;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,.05);}
+.nav-link.active{color:var(--text);}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pRed 1.5s ease-in-out infinite;}
+@keyframes pRed{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-cta{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.btn-ghost{color:var(--muted);background:none;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 16px;border-radius:8px;cursor:pointer;transition:all .2s;text-decoration:none;}
+.btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+.btn-primary{background:var(--accent);color:#fff;font-weight:600;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 18px;border-radius:9px;border:none;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;white-space:nowrap;}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,90,31,.4);}
+
+/* ─── HERO ──────────────────────────────────────────────────────────── */
+.hero{min-height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:60px 60px 80px;}
+.hero-cinematic{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 45% 65% at 72% 38%,rgba(150,85,220,.28) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 28% 70%,rgba(255,90,31,.1) 0%,transparent 55%),radial-gradient(ellipse 80% 80% at 60% 50%,#0c0419 0%,#060709 70%);animation:ciShift 9s ease-in-out infinite alternate;}
+@keyframes ciShift{from{filter:brightness(1)}to{filter:brightness(1.18)}}
+.hero-grid-overlay{position:absolute;inset:0;z-index:0;opacity:.1;background-image:linear-gradient(rgba(150,85,220,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(150,85,220,.4) 1px,transparent 1px);background-size:60px 60px;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 70% 40%,black 20%,transparent 70%);mask-image:radial-gradient(ellipse 80% 60% at 70% 40%,black 20%,transparent 70%);}
+.hero-visual{position:absolute;right:0;top:0;bottom:0;width:52%;z-index:0;}
+.hero-visual-art{position:absolute;inset:0;background:linear-gradient(135deg,#18053e 0%,#0d1d42 35%,#031b35 65%,#18053e 100%);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.orb1{position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(150,85,220,.45) 0%,transparent 70%);animation:orb 7s ease-in-out infinite;top:25%;left:35%;}
+.orb2{position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,90,31,.3) 0%,transparent 70%);animation:orb2 10s ease-in-out infinite;bottom:20%;right:18%;}
+.orb3{position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(61,155,255,.25) 0%,transparent 70%);animation:orb3 6s ease-in-out infinite;top:10%;right:30%;}
+@keyframes orb{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
+@keyframes orb2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(25px,-20px) scale(1.15)}}
+@keyframes orb3{0%,100%{transform:translate(0,0)}33%{transform:translate(20px,15px)}66%{transform:translate(-15px,25px)}}
+.visual-grid{position:absolute;inset:0;opacity:.12;background-image:linear-gradient(rgba(150,85,220,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(150,85,220,.5) 1px,transparent 1px);background-size:50px 50px;}
+.visual-watermark{position:relative;z-index:1;font-family:'Syne',sans-serif;font-size:100px;font-weight:800;color:rgba(255,255,255,.025);letter-spacing:-6px;-webkit-user-select:none;user-select:none;line-height:1;}
+.hero-left-fade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,var(--bg) 0%,rgba(6,7,9,.7) 50%,transparent 100%);pointer-events:none;}
+.hero-bottom-fade{position:absolute;bottom:0;left:0;right:0;height:300px;z-index:1;background:linear-gradient(transparent,var(--bg));pointer-events:none;}
+.hero-content{position:relative;z-index:2;max-width:580px;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,53,53,.12);border:1px solid rgba(255,53,53,.3);border-radius:99px;padding:5px 12px 5px 8px;font-size:11px;font-weight:700;color:#ff5555;margin-bottom:26px;letter-spacing:.5px;}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pRed 1s infinite;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(38px,5.5vw,74px);font-weight:800;line-height:1.0;letter-spacing:-2.5px;margin-bottom:22px;}
+.grad-text{background:linear-gradient(135deg,#ff5a1f 0%,#ff8c4b 50%,#ffc09b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-desc{color:var(--muted);font-size:16px;line-height:1.65;margin-bottom:34px;max-width:460px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px;}
+.btn-hprimary{display:inline-flex;align-items:center;gap:9px;background:var(--accent);color:#fff;font-weight:700;font-size:15px;padding:13px 28px;border-radius:12px;border:none;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;box-shadow:0 8px 30px rgba(255,90,31,.35);text-decoration:none;}
+.btn-hprimary:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,90,31,.5);}
+.btn-hsecondary{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.07);color:var(--text);font-weight:500;font-size:15px;padding:13px 28px;border-radius:12px;border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;text-decoration:none;}
+.btn-hsecondary:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);}
+.hero-stats{display:flex;gap:36px;}
+.hstat-num{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;}
+.hstat-lbl{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* ─── LIVE STRIP ─────────────────────────────────────────────────────── */
+.live-strip{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;}
+.live-strip-hdr{display:flex;align-items:center;gap:8px;padding:14px 36px 0;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);}
+.live-strip-track{display:flex;gap:0;padding:14px 36px 18px;overflow-x:auto;scrollbar-width:none;}
+.live-strip-track::-webkit-scrollbar{display:none;}
+.live-card{flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;min-width:190px;margin-right:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px;}
+.live-card:hover{border-color:rgba(255,90,31,.3);transform:translateY(-2px);}
+.live-card-top{display:flex;justify-content:space-between;align-items:center;}
+.live-card-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.live-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--red);background:rgba(255,53,53,.1);border-radius:4px;padding:3px 7px;}
+.mini-dot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:pRed 1.5s infinite;}
+.live-card-name{font-size:13px;font-weight:600;}
+.live-card-viewers{font-size:11px;color:var(--muted);}
+
+/* ─── ENHANCED MODEL SELECTOR ─────────────────────────────────────────── */
+.model-selector-wrap{background:rgba(150,85,220,.05);border:1px solid rgba(150,85,220,.15);border-radius:16px;padding:16px 18px;margin-bottom:18px;}
+.model-selector-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.model-selector-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--purple);}
+.free-tier-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(30,204,110,.1);border:1px solid rgba(30,204,110,.22);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:700;color:var(--green);letter-spacing:.5px;}
+.model-count-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(150,85,220,.12);border:1px solid rgba(150,85,220,.25);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:700;color:var(--purple);}
+.active-model-display{display:inline-flex;align-items:center;gap:6px;margin-left:auto;font-size:11px;color:var(--purple);font-weight:600;}
+
+/* Provider group labels */
+.model-provider-group{margin-bottom:10px;}
+.model-provider-label{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.model-provider-dot{width:5px;height:5px;border-radius:50%;}
+
+/* Model pills */
+.model-pills-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px;}
+.model-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:8px;padding:6px 11px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--muted);
+  cursor:pointer;transition:all .18s;white-space:nowrap;position:relative;
+}
+.model-pill:hover{border-color:rgba(150,85,220,.35);color:var(--text);background:rgba(150,85,220,.06);}
+.model-pill.active{background:rgba(150,85,220,.1);border-color:rgba(150,85,220,.45);color:#c490ff;}
+.model-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .2s;}
+.model-pill.active .model-dot{animation:pPurple 1.5s infinite;}
+@keyframes pPurple{0%,100%{opacity:1}50%{opacity:.4}}
+.model-tag{border-radius:4px;padding:1px 5px;font-size:9px;font-weight:700;letter-spacing:.5px;}
+.model-img-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.model-img-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--muted);}
+.model-img-badge.free{background:rgba(30,204,110,.07);border-color:rgba(30,204,110,.2);color:var(--green);}
+
+/* ─── AD STUDIO ──────────────────────────────────────────────────────── */
+.ad-studio-wrap{background:var(--bg);border-top:1px solid var(--border);padding:100px 0;}
+.section-inner{max-width:1280px;margin:0 auto;padding:0 60px;}
+.s-eyebrow{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.s-eyebrow::before{content:'';width:22px;height:1px;background:var(--accent);opacity:.6;}
+.s-title{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,50px);font-weight:800;letter-spacing:-1.5px;line-height:1.08;}
+.s-sub{color:var(--muted);font-size:16px;margin-top:12px;max-width:500px;}
+.studio-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;margin-top:52px;}
+.studio-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px;box-shadow:0 24px 80px rgba(0,0,0,.5);}
+.input-tabs{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:18px;}
+.tab-btn{flex:1;padding:9px;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;transition:all .2s;}
+.tab-btn.active{background:var(--surface2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.4);}
+.input-field{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .2s;margin-bottom:10px;}
+.input-field:focus{border-color:rgba(255,90,31,.5);}
+.input-field::placeholder{color:var(--muted);}
+.gen-btn{background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:14px;border-radius:12px;border:none;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;}
+.gen-btn:hover{background:var(--accent2);}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed;}
+.loading-overlay{display:none;flex-direction:column;align-items:center;gap:12px;padding:22px;background:var(--bg);border:1px solid var(--border);border-radius:14px;margin-top:14px;}
+.loading-overlay.visible{display:flex;}
+.loading-text{font-size:13px;color:var(--muted);}
+.loading-bar-wrap{width:100%;background:var(--surface2);border-radius:99px;height:3px;overflow:hidden;}
+.loading-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;animation:lbar 3.5s ease-in-out forwards;}
+@keyframes lbar{0%{width:0}60%{width:65%}100%{width:88%}}
+.ad-result{display:none;margin-top:14px;}
+.ad-result-card{background:var(--bg);border:1px solid rgba(255,90,31,.22);border-radius:14px;overflow:hidden;}
+.ard-header{background:rgba(255,90,31,.07);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,90,31,.12);flex-wrap:wrap;}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pDot 1.5s infinite;}
+@keyframes pDot{0%,100%{opacity:1}50%{opacity:.3}}
+.ard-label{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:2px;text-transform:uppercase;}
+.ard-model-badge{font-size:10px;color:var(--purple);background:rgba(150,85,220,.1);border:1px solid rgba(150,85,220,.2);border-radius:4px;padding:2px 8px;margin-left:auto;}
+.ad-script{padding:16px;font-size:13px;line-height:1.9;color:var(--text);white-space:pre-wrap;max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.ard-actions{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--border);flex-wrap:wrap;}
+.action-btn{font-size:12px;font-weight:500;padding:7px 14px;border-radius:8px;border:1px solid var(--border);color:var(--muted);background:none;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.action-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+.action-btn.accent{background:var(--accent);color:#fff;border-color:transparent;}
+.action-btn.accent:hover{background:var(--accent2);}
+
+/* ─── VIDEO AREA ───────────────────────────────────────────────────────── */
+.video-area{display:flex;flex-direction:column;gap:10px;}
+.video-placeholder{aspect-ratio:16/9;background:var(--surface);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;position:relative;overflow:hidden;cursor:pointer;}
+.vp-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0c1520 0%,#160a0a 50%,#0c1520 100%);}
+.vp-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(255,90,31,.08) 0%,transparent 70%);}
+.vp-icon{width:64px;height:64px;border-radius:50%;background:rgba(255,90,31,.1);border:2px solid rgba(255,90,31,.3);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;transition:all .3s;}
+.video-placeholder:hover .vp-icon{background:rgba(255,90,31,.2);border-color:var(--accent);transform:scale(1.06);}
+.vp-text{position:relative;z-index:1;text-align:center;font-size:13px;color:var(--muted);}
+.vp-text strong{color:var(--text);display:block;margin-bottom:4px;font-size:14px;}
+
+/* Generating state */
+.video-generating{display:none;aspect-ratio:16/9;background:var(--surface);border:1px solid var(--border);border-radius:16px;flex-direction:column;align-items:center;justify-content:center;gap:20px;position:relative;overflow:hidden;}
+.video-generating.active{display:flex;}
+.vg-bg{position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(150,85,220,.06) 0%,transparent 70%);}
+.vg-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;position:relative;z-index:1;}
+.vg-sub{font-size:13px;color:var(--muted);position:relative;z-index:1;}
+.scene-prog-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:360px;position:relative;z-index:1;}
+.spg-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:all .35s;aspect-ratio:16/9;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;color:var(--muted);min-height:54px;}
+.spg-item.loading{border-color:rgba(255,90,31,.35);color:var(--accent);background:rgba(255,90,31,.05);}
+.spg-item.done{padding:0;}
+.spg-thumb{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .6s;}
+.spg-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);padding:2px 5px;font-size:9px;text-align:center;color:#fff;}
+.spg-loading-spin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.vg-progress-row{display:flex;align-items:center;gap:12px;width:100%;max-width:360px;position:relative;z-index:1;}
+.vg-prog-bar{flex:1;height:3px;background:var(--surface2);border-radius:99px;overflow:hidden;}
+.vg-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:99px;transition:width .4s ease;width:0%;}
+.vg-prog-txt{font-size:11px;color:var(--muted);white-space:nowrap;}
+
+/* ─── ENHANCED VIDEO PLAYER ────────────────────────────────────────────── */
+.ai-player{
+  display:none;aspect-ratio:16/9;background:#000;
+  border-radius:16px;overflow:hidden;position:relative;
+  border:1px solid var(--border);
+}
+.ai-player.active{display:block;}
+
+/* Scene frames with Ken Burns */
+.scene-frame{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;pointer-events:none;overflow:hidden;}
+.scene-frame.visible{opacity:1;}
+.scene-frame img{width:108%;height:108%;object-fit:cover;position:absolute;top:-4%;left:-4%;}
+.scene-frame[data-kb="0"] img{animation:kb0 9s ease-in-out forwards;}
+.scene-frame[data-kb="1"] img{animation:kb1 9s ease-in-out forwards;}
+.scene-frame[data-kb="2"] img{animation:kb2 9s ease-in-out forwards;}
+.scene-frame[data-kb="3"] img{animation:kb3 9s ease-in-out forwards;}
+@keyframes kb0{from{transform:scale(1) translate(0%,0%)}to{transform:scale(1.09) translate(-2.5%,-1.5%)}}
+@keyframes kb1{from{transform:scale(1.09) translate(-1%,-1%)}to{transform:scale(1) translate(2.5%,1%)}}
+@keyframes kb2{from{transform:scale(1) translate(1%,.5%)}to{transform:scale(1.09) translate(-1.5%,-2%)}}
+@keyframes kb3{from{transform:scale(1.07) translate(.5%,-1%)}to{transform:scale(1) translate(1.5%,1.5%)}}
+.scene-frame-fallback{position:absolute;inset:0;}
+
+/* Film grain canvas */
+.grain-canvas{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.04;mix-blend-mode:overlay;border-radius:16px;}
+
+/* Vignette + color grade */
+.player-vignette{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 60%,rgba(0,0,0,.55) 100%);}
+
+/* Letterbox bars */
+.letterbox-top,.letterbox-bottom{position:absolute;left:0;right:0;z-index:6;background:#000;pointer-events:none;height:0;transition:height .5s;}
+.letterbox-top{top:0;}
+.letterbox-bottom{bottom:0;}
+.ai-player.cinematic .letterbox-top,.ai-player.cinematic .letterbox-bottom{height:7%;}
+
+/* Scene transition flash */
+.scene-flash{position:absolute;inset:0;z-index:5;background:#fff;opacity:0;pointer-events:none;transition:opacity .1s;}
+.scene-flash.flash-on{opacity:.06;}
+
+.player-overlay{position:absolute;inset:0;z-index:5;pointer-events:none;background:linear-gradient(transparent 30%,rgba(0,0,0,.82) 100%);display:flex;flex-direction:column;justify-content:flex-end;}
+.player-overlay-top{position:absolute;top:12px;left:12px;display:flex;gap:7px;pointer-events:none;align-items:center;}
+.player-badge-ad{background:rgba(255,90,31,.9);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;letter-spacing:1px;}
+.player-scene-count{background:rgba(0,0,0,.65);color:var(--muted);font-size:11px;padding:4px 10px;border-radius:5px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+.player-model-tag{background:rgba(150,85,220,.55);color:#dab5ff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+.player-scene-title{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;
+  text-align:center;max-width:70%;padding:10px 18px;
+  background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:8px;
+  text-shadow:0 2px 12px rgba(0,0,0,.9);
+  opacity:0;transform:translate(-50%,-50%) scale(.95);
+  transition:opacity .5s ease,transform .5s ease;
+  pointer-events:none;z-index:7;
+}
+.player-scene-title.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+
+/* Voiceover subtitle */
+.player-voiceover{
+  position:absolute;bottom:54px;left:16px;right:16px;text-align:center;
+  font-size:13px;color:#fff;font-style:italic;line-height:1.55;
+  text-shadow:0 1px 8px rgba(0,0,0,1);
+  background:rgba(0,0,0,.52);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border-radius:8px;padding:9px 16px;
+  transition:opacity .45s ease,transform .45s ease;
+}
+.player-voiceover.hidden{opacity:0;transform:translateY(5px);}
+
+.player-controls{position:absolute;bottom:0;left:0;right:0;z-index:10;padding:6px 14px 10px;pointer-events:all;}
+.player-progress-bar{width:100%;height:4px;background:rgba(255,255,255,.18);border-radius:99px;margin-bottom:8px;overflow:hidden;cursor:pointer;transition:height .2s;}
+.player-progress-bar:hover{height:6px;}
+.player-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;width:0%;transition:width .35s linear;}
+.player-ctrls{display:flex;align-items:center;gap:10px;}
+.pc-btn{background:none;border:none;color:#fff;cursor:pointer;padding:4px;display:flex;align-items:center;transition:opacity .2s;}
+.pc-btn:hover{opacity:.65;}
+.pc-time{font-size:11px;color:rgba(255,255,255,.65);margin-left:4px;}
+
+/* Scene Timeline Strip */
+.scene-timeline{display:none;grid-template-columns:repeat(4,1fr);gap:6px;}
+.scene-timeline.visible{display:grid;}
+.scene-thumb{aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:2px solid var(--border);cursor:pointer;transition:all .22s;position:relative;background:var(--surface2);}
+.scene-thumb:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,90,31,.25);}
+.scene-thumb.active{border-color:var(--accent);box-shadow:0 0 16px rgba(255,90,31,.3);}
+.scene-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.scene-thumb-num{position:absolute;bottom:3px;left:4px;background:rgba(0,0,0,.78);color:#fff;font-size:9px;font-weight:700;border-radius:3px;padding:1px 5px;letter-spacing:.5px;}
+.scene-thumb-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;background:rgba(0,0,0,.35);transition:opacity .2s;}
+.scene-thumb:hover .scene-thumb-play{opacity:1;}
+
+/* Info cards */
+.video-info-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.vic{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+.vic-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.vic-val{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;color:var(--text);}
+.vic-val .ac{color:var(--accent);}
+
+/* ─── SPINNER ──────────────────────────────────────────────────────────── */
+.spinner{display:inline-block;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:var(--accent);animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── AUCTION SECTION ──────────────────────────────────────────────────── */
+.auction-wrap{background:var(--surface);border-top:1px solid var(--border);padding:100px 0;}
+.auction-hdr-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;flex-wrap:wrap;gap:20px;}
+.live-auction-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,53,53,.1);border:1px solid rgba(255,53,53,.22);border-radius:6px;padding:5px 12px;font-size:10px;font-weight:700;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+
+/* ─── BUDGET BAR ──────────────────────────────────────────────────────── */
+.budget-bar{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:18px;padding:18px 22px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  margin-bottom:24px;position:relative;overflow:hidden;
+}
+.budget-bar::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 40% 80% at 0% 50%,rgba(30,204,110,.04) 0%,transparent 60%);pointer-events:none;}
+.budget-lbl{font-size:13px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.budget-lbl-icon{font-size:16px;}
+.budget-input-wrap{display:flex;align-items:center;background:var(--bg);border:1.5px solid var(--border);border-radius:11px;overflow:hidden;transition:border-color .2s;}
+.budget-input-wrap:focus-within{border-color:rgba(30,204,110,.4);}
+.budget-curr{padding:10px 13px;background:var(--surface2);font-size:16px;font-weight:700;color:var(--green);border-right:1px solid var(--border);}
+input.budget-num{background:transparent;border:none;outline:none;color:var(--text);font-family:'Syne',sans-serif;font-size:20px;font-weight:700;padding:10px 14px;width:120px;}
+.activate-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;font-size:13px;padding:12px 22px;border-radius:11px;border:none;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;white-space:nowrap;box-shadow:0 4px 20px rgba(255,90,31,.3);}
+.activate-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(255,90,31,.45);}
+.activate-btn.agent-on{background:linear-gradient(135deg,#1ecc6e,#22d07a);box-shadow:0 4px 20px rgba(30,204,110,.3);}
+.agent-status-indicator{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-left:auto;}
+.agent-status-indicator.on{color:var(--green);}
+.asdot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+.agent-status-indicator.on .asdot{background:var(--green);animation:pGreen 1.5s infinite;}
+@keyframes pGreen{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* Budget progress row */
+.budget-progress-row{width:100%;margin-top:12px;flex-basis:100%;}
+.budget-prog-bar-wrap{width:100%;height:6px;background:var(--bg);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+.budget-prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:99px;width:0%;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.budget-prog-bar-fill.high{background:linear-gradient(90deg,var(--accent),var(--red));}
+.budget-stats-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);flex-wrap:wrap;gap:6px;}
+.budget-stat{display:flex;align-items:center;gap:5px;}
+.budget-stat strong{color:var(--text);font-weight:600;}
+.budget-stat.green strong{color:var(--green);}
+.budget-stat.red strong{color:var(--red);}
+.budget-stat.orange strong{color:var(--accent2);}
+
+/* Auction layout */
+.auction-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
+.auction-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+
+/* Auction cards */
+.ai-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .25s;cursor:default;}
+.ai-card:hover{border-color:rgba(255,90,31,.28);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.45);}
+.ai-card.winning{border-color:rgba(30,204,110,.4);box-shadow:0 0 22px rgba(30,204,110,.1);}
+.ai-card.outbid-flash{animation:outbidFlash .8s ease-out;}
+@keyframes outbidFlash{0%{box-shadow:0 0 28px rgba(255,53,53,.6)}100%{box-shadow:none}}
+.ai-card-img{aspect-ratio:4/3;background:var(--surface2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.ai-card-img .img-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--surface2),var(--bg));}
+.ai-card-img .item-emoji{position:relative;z-index:1;font-size:52px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5));}
+.timer-badge{position:absolute;top:10px;right:10px;z-index:2;background:rgba(0,0,0,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 10px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
+.timer-badge.urgent{color:var(--red);border-color:rgba(255,53,53,.3);animation:urgentPulse 1s ease-in-out infinite;}
+@keyframes urgentPulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 12px rgba(255,53,53,.35)}}
+.winning-label{position:absolute;top:10px;left:10px;z-index:2;display:none;background:rgba(30,204,110,.15);border:1px solid rgba(30,204,110,.4);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;}
+.ai-card.winning .winning-label{display:block;}
+.outbid-label{position:absolute;top:10px;left:10px;z-index:2;display:none;background:rgba(255,53,53,.15);border:1px solid rgba(255,53,53,.4);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;}
+.ai-card-body{padding:14px;}
+.ai-item-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px;}
+.ai-item-cat{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.price-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.cbid-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.cbid{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent);transition:color .3s;}
+.cbid.flash{color:var(--green)!important;}
+.retail-lbl{font-size:10px;color:var(--muted);text-decoration:line-through;}
+.disc-pct{font-size:11px;color:var(--green);font-weight:600;margin-left:3px;}
+.bid-bar-wrap{height:3px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:10px;}
+.bid-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .6s ease;}
+.bid-row{display:flex;justify-content:space-between;align-items:center;gap:6px;}
+.bid-count{font-size:11px;color:var(--muted);}
+.manual-bid-btn{font-size:11px;font-weight:600;padding:6px 12px;border-radius:7px;border:1px solid var(--border);color:var(--muted);background:none;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.manual-bid-btn:hover{background:rgba(255,90,31,.08);border-color:rgba(255,90,31,.3);color:var(--text);}
+.manual-bid-btn.winning-btn{border-color:rgba(30,204,110,.3);color:var(--green);}
+.manual-bid-btn.winning-btn:hover{background:rgba(30,204,110,.08);}
+.bid-ended{font-size:11px;color:var(--muted);font-weight:500;}
+
+/* ─── AGENT PANEL ─────────────────────────────────────────────────────── */
+.agent-panel{background:var(--bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;height:fit-content;position:sticky;top:76px;}
+.agent-hdr{background:var(--surface2);padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.agent-ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.agent-panel-ttl{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+.agent-panel-sub{font-size:11px;color:var(--muted);}
+.agent-kpis{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.agent-kpi{padding:12px 14px;text-align:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+.agent-kpi:nth-child(2),.agent-kpi:nth-child(4){border-right:none;}
+.agent-kpi:nth-child(3),.agent-kpi:nth-child(4){border-bottom:none;}
+.agent-kpi-val{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;transition:color .4s,transform .3s;}
+.agent-kpi-val.bump{transform:scale(1.1);}
+.agent-kpi-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.agent-chat{padding:14px 16px;height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.agent-chat::-webkit-scrollbar{width:4px;}
+.agent-chat::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+.agent-msg{display:flex;gap:8px;align-items:flex-start;animation:msgIn .3s ease-out;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.amsg-ava{width:26px;height:26px;border-radius:50%;flex-shrink:0;margin-top:2px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:11px;}
+.amsg-bubble{background:var(--surface2);border-radius:10px 10px 10px 2px;padding:9px 12px;font-size:12px;line-height:1.65;color:var(--text);flex:1;}
+.amsg-bid-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(30,204,110,.1);border:1px solid rgba(30,204,110,.2);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--green);margin-top:8px;width:100%;}
+.amsg-watch-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,90,31,.08);border:1px solid rgba(255,90,31,.2);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--accent);margin-top:8px;width:100%;}
+.amsg-skip-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--muted);margin-top:8px;width:100%;}
+.amsg-budget-warn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,53,53,.08);border:1px solid rgba(255,53,53,.2);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--red);margin-top:8px;width:100%;}
+.amsg-outbid-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,53,53,.08);border:1px solid rgba(255,53,53,.2);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--red);margin-top:8px;width:100%;}
+.sys-msg{text-align:center;font-size:11px;color:var(--muted);padding:4px 0;}
+.agent-footer{border-top:1px solid var(--border);padding:10px 16px;text-align:center;font-size:12px;color:var(--muted);}
+.agent-scan-bar{height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scanBar 2s ease-in-out infinite;display:none;}
+@keyframes scanBar{0%{background-position:-200px 0}100%{background-position:200px 0}}
+.agent-panel.active-state .agent-scan-bar{display:block;}
+
+/* ─── FOOTER ──────────────────────────────────────────────────────────── */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:64px 60px 32px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1280px;margin:0 auto 48px;}
+.footer-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.footer-tagline{color:var(--muted);font-size:13px;line-height:1.65;max-width:200px;}
+.footer-socials{display:flex;gap:10px;margin-top:20px;}
+.footer-social{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;font-size:14px;transition:all .2s;}
+.footer-social:hover{border-color:rgba(255,90,31,.4);color:var(--accent);}
+.footer-col h4{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.footer-col a{display:block;color:rgba(238,238,237,.45);font-size:13px;text-decoration:none;margin-bottom:10px;transition:color .2s;}
+.footer-col a:hover{color:var(--text);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid var(--border);max-width:1280px;margin:0 auto;font-size:12px;color:var(--muted);flex-wrap:wrap;gap:10px;}
+.footer-legal{display:flex;gap:20px;}
+.footer-legal a{font-size:12px;color:var(--muted);text-decoration:none;}
+.footer-legal a:hover{color:var(--text);}
+
+/* ─── MODAL ───────────────────────────────────────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.88);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:460px;position:relative;animation:mIn .3s ease-out;}
+@keyframes mIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:8px;line-height:1;}
+.modal h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px;}
+.modal p{color:var(--muted);font-size:14px;margin-bottom:22px;}
+.modal-field{margin-bottom:14px;}
+.modal-field label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;}
+.modal-field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+.modal-field input:focus{border-color:rgba(255,90,31,.5);}
+.modal-submit{width:100%;margin-top:8px;padding:13px;border-radius:11px;font-size:14px;}
+
+/* ─── FADE IN ─────────────────────────────────────────────────────────── */
+.fade-in{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────────── */
+@media(max-width:1100px){.studio-grid{grid-template-columns:1fr}.auction-layout{grid-template-columns:1fr}.auction-grid{grid-template-columns:repeat(3,1fr)}.agent-panel{position:static}}
+@media(max-width:860px){.hero{padding:80px 24px 60px;min-height:auto}.hero-visual{display:none}.section-inner,footer{padding-left:24px;padding-right:24px}nav{padding:0 20px}.nav-center{display:none}.auction-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.auction-grid{grid-template-columns:1fr}.hero-stats{gap:24px}.video-info-cards{grid-template-columns:1fr}.scene-timeline{grid-template-columns:repeat(2,1fr)}.model-pills-row{gap:4px}.budget-bar{gap:10px}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-box">▶</div>
+    StreamVibe
+  </a>
+  <div class="nav-center">
+    <a href="#" class="nav-link active">Browse</a>
+    <a href="#" class="nav-link"><span class="live-dot"></span> Live</a>
+    <a href="#shop-section" class="nav-link">ShopLive</a>
+    <a href="#studio-section" class="nav-link">Ad Studio</a>
+    <a href="#" class="nav-link">Pricing</a>
+  </div>
+  <div class="nav-cta">
+    <button class="btn-ghost" onclick="openModal('login')">Sign In</button>
+    <button class="btn-primary" onclick="openModal('signup')">Watch Free</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-cinematic"></div>
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-visual">
+    <div class="hero-visual-art">
+      <div class="visual-grid"></div>
+      <div class="orb1"></div><div class="orb2"></div><div class="orb3"></div>
+      <div class="visual-watermark">LIVE<br>TV</div>
+    </div>
+    <div class="hero-left-fade"></div>
+  </div>
+  <div class="hero-bottom-fade"></div>
+  <div class="hero-content fade-in">
+    <div class="hero-badge"><div class="dot"></div> LIVE NOW — 3 AUCTIONS ENDING SOON</div>
+    <h1>Stream Live.<br><span class="grad-text">Sell Smarter.</span><br>Win Every Bid.</h1>
+    <p class="hero-desc">The streaming platform that does it all — live TV, AI-powered CTV ad creation with real scene visualization, and a live shopping auction with an AI bidding agent that bids strategically within your budget.</p>
+    <div class="hero-btns">
+      <a href="#studio-section" class="btn-hprimary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Create Your Ad
+      </a>
+      <a href="#shop-section" class="btn-hsecondary">🛍️ Join Live Auction</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hstat-num">120<span style="color:var(--accent)">M</span></div><div class="hstat-lbl">Households Reached</div></div>
+      <div><div class="hstat-num">500<span style="color:var(--accent)">+</span></div><div class="hstat-lbl">Streaming Channels</div></div>
+      <div><div class="hstat-num" style="color:var(--green)">$0.02</div><div class="hstat-lbl">Cost Per View</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE STRIP -->
+<div class="live-strip">
+  <div class="live-strip-hdr"><span class="live-dot"></span> Live Now</div>
+  <div class="live-strip-track" id="live-strip-track"></div>
+</div>
+
+<!-- CTV AD STUDIO -->
+<div class="ad-studio-wrap" id="studio-section">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="s-eyebrow">CTV Ad Studio</div>
+      <h2 class="s-title">Generate your TV ad.<br>Visualize it instantly.</h2>
+      <p class="s-sub">Choose any free-tier AI model across 5 providers — Google, Meta, Mistral, OpenAI, DeepSeek — type your business, and get a full 4-scene cinematic TV commercial.</p>
+    </div>
+
+    <div class="studio-grid fade-in">
+      <!-- LEFT: Input + Script -->
+      <div>
+        <div class="studio-card">
+          <!-- Enhanced Model Selector -->
+          <div class="model-selector-wrap">
+            <div class="model-selector-hdr">
+              <span class="model-selector-label">AI Engine</span>
+              <span class="free-tier-badge">✓ FREE TIER</span>
+              <span class="model-count-badge" id="model-count-badge">Flagship Models</span>
+              <span class="active-model-display" id="active-model-display">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--google);animation:pPurple 1.5s infinite;display:inline-block"></span>
+                Gemini 2.5 Flash
+              </span>
+            </div>
+            <!-- Model Pills rendered by JS -->
+            <div id="model-pills-container"></div>
+            <div class="model-img-row">
+              <span class="model-img-badge">📷 Scene Images: Pollinations AI</span>
+              <span class="model-img-badge free">✓ Free · No Key Needed</span>
+              <span class="model-img-badge" style="color:var(--blue)">🔥 Flux HD</span>
+            </div>
+          </div>
+
+          <div class="input-tabs">
+            <button class="tab-btn active" id="tab-url" onclick="switchTab('url')">🔗 Via URL</button>
+            <button class="tab-btn" id="tab-maps" onclick="switchTab('maps')">📍 Via Business Name</button>
+          </div>
+          <input class="input-field" id="main-input" type="text" placeholder="e.g. https://mybiz.com or Joe's Pizza NYC"/>
+          <button class="gen-btn" id="gen-btn" onclick="generateAd()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Generate Ad Campaign
+          </button>
+
+          <div class="loading-overlay" id="loading-overlay">
+            <div class="spinner" style="width:22px;height:22px"></div>
+            <div class="loading-text" id="loading-text">Analyzing your business…</div>
+            <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+          </div>
+
+          <div class="ad-result" id="ad-result">
+            <div class="ad-result-card">
+              <div class="ard-header">
+                <div class="pulse-dot"></div>
+                <span class="ard-label">AI-Generated TV Commercial Script</span>
+                <span class="ard-model-badge" id="ard-model-badge">Gemini 2.5 Flash</span>
+              </div>
+              <div class="ad-script" id="ad-script-text"></div>
+              <div class="ard-actions">
+                <button class="action-btn" onclick="generateAd()">↺ Regenerate</button>
+                <button class="action-btn" onclick="copyScript()">⎘ Copy Script</button>
+                <button class="action-btn accent" id="gen-video-btn" onclick="generateVideo()">🎬 Generate AI Video</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="video-info-cards" id="info-cards" style="display:none;margin-top:14px">
+          <div class="vic">
+            <div class="vic-lbl">Target Audience</div>
+            <div class="vic-val" id="vic-audience" style="font-size:13px;font-weight:500;color:var(--muted)">—</div>
+          </div>
+          <div class="vic">
+            <div class="vic-lbl">Estimated Reach</div>
+            <div class="vic-val" id="vic-reach"><span class="ac">—</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Video Player -->
+      <div class="video-area">
+        <div class="video-placeholder" id="video-placeholder" onclick="promptGenerate()">
+          <div class="vp-bg"></div>
+          <div class="vp-glow"></div>
+          <div class="vp-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+          <div class="vp-text">
+            <strong>AI Scene Preview</strong>
+            Generate a campaign, then click "Generate AI Video" to see each scene rendered with cinematic AI imagery
+          </div>
+        </div>
+
+        <!-- Generating state -->
+        <div class="video-generating" id="video-generating">
+          <div class="vg-bg"></div>
+          <div class="vg-title">🎬 Rendering Cinematic Scenes…</div>
+          <div class="vg-sub" id="vg-sub-text">Generating AI imagery via Pollinations Flux HD</div>
+          <div class="scene-prog-grid" id="scene-prog-grid"></div>
+          <div class="vg-progress-row">
+            <div class="vg-prog-bar"><div class="vg-prog-fill" id="vg-prog-fill"></div></div>
+            <div class="vg-prog-txt" id="gen-count-text">0 / 4 scenes ready</div>
+          </div>
+        </div>
+
+        <!-- Enhanced Video Player -->
+        <div class="ai-player cinematic" id="ai-player">
+          <canvas class="grain-canvas" id="grain-canvas"></canvas>
+          <div class="player-vignette"></div>
+          <div class="letterbox-top"></div>
+          <div class="letterbox-bottom"></div>
+          <div class="scene-flash" id="scene-flash"></div>
+          <!-- Scene frames injected by JS -->
+          <div class="player-scene-title" id="player-scene-title"></div>
+          <div class="player-overlay">
+            <div class="player-overlay-top">
+              <div class="player-badge-ad">30s AD</div>
+              <div class="player-scene-count" id="player-scene-count">Scene 1 / 4</div>
+              <div class="player-model-tag" id="player-model-tag">Gemini 2.5 Flash</div>
+            </div>
+            <div class="player-voiceover" id="player-voiceover"></div>
+          </div>
+          <div class="player-controls">
+            <div class="player-progress-bar" onclick="seekVideo(event, this)">
+              <div class="player-progress-fill" id="player-progress-fill"></div>
+            </div>
+            <div class="player-ctrls">
+              <button class="pc-btn" onclick="togglePlay()">
+                <svg id="play-icon" width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <svg id="pause-icon" width="18" height="18" viewBox="0 0 24 24" fill="white" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              </button>
+              <span class="pc-time" id="player-time">0:00 / 0:30</span>
+              <div style="flex:1"></div>
+              <button class="pc-btn" onclick="restartVideo()" title="Restart">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.53"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="scene-timeline" id="scene-timeline"></div>
+
+        <div class="video-info-cards" id="video-info-cards" style="display:none">
+          <div class="vic"><div class="vic-lbl">Ad Duration</div><div class="vic-val"><span class="ac">30</span>s Commercial</div></div>
+          <div class="vic"><div class="vic-lbl">Scenes</div><div class="vic-val">AI Rendered <span class="ac" id="scene-count-badge">×4</span></div></div>
+          <div class="vic"><div class="vic-lbl">Status</div><div class="vic-val" style="color:var(--green)">● Ready</div></div>
+          <div class="vic"><div class="vic-lbl">Generated via</div><div class="vic-val" style="font-size:12px;font-weight:600;color:var(--muted)" id="vic-provider">—</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHOP LIVE AUCTION -->
+<div class="auction-wrap" id="shop-section">
+  <div class="section-inner">
+    <div class="auction-hdr-row fade-in">
+      <div>
+        <div class="live-auction-badge"><span class="mini-dot"></span> LIVE AUCTION</div>
+        <h2 class="s-title">ShopLive Auctions</h2>
+        <p class="s-sub" style="margin-top:10px">Set your bag amount and activate the AI Bidding Agent — it analyzes every item, evaluates value vs your budget, and bids strategically. Budget is tracked precisely in real-time.</p>
+      </div>
+    </div>
+
+    <!-- Enhanced Budget Bar -->
+    <div class="budget-bar fade-in">
+      <div class="budget-lbl"><span class="budget-lbl-icon">💼</span> My Bag:</div>
+      <div class="budget-input-wrap">
+        <div class="budget-curr">$</div>
+        <input type="number" class="budget-num" id="budget-input" value="500" min="50" max="10000" oninput="updateBudgetDisplay()" aria-label="Auction budget amount" title="Auction budget amount" placeholder="500">
+      </div>
+      <button class="activate-btn" id="activate-btn" onclick="toggleAgent()">🤖 Activate AI Agent</button>
+      <div class="agent-status-indicator" id="agent-status-indicator">
+        <div class="asdot"></div> Agent Offline
+      </div>
+      <div class="budget-progress-row" style="flex-basis:100%">
+        <div class="budget-prog-bar-wrap">
+          <div class="budget-prog-bar-fill" id="budget-prog-fill"></div>
+        </div>
+        <div class="budget-stats-row">
+          <div class="budget-stat green"><span>Remaining:</span> <strong id="budget-remaining-text">$500</strong></div>
+          <div class="budget-stat"><span>Committed:</span> <strong id="budget-committed-text">$0</strong></div>
+          <div class="budget-stat"><span>Items Winning:</span> <strong id="budget-won-text">0</strong></div>
+          <div class="budget-stat"><span>Saved vs Retail:</span> <strong id="budget-saved-text" style="color:var(--green)">$0</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auction-layout fade-in">
+      <div class="auction-grid" id="auction-grid"></div>
+
+      <!-- Agent Panel -->
+      <div class="agent-panel" id="agent-panel">
+        <div class="agent-scan-bar"></div>
+        <div class="agent-hdr">
+          <div class="agent-ava" id="agent-ava-icon">🤖</div>
+          <div>
+            <div class="agent-panel-ttl">ShopLive AI Agent</div>
+            <div class="agent-panel-sub" id="agent-model-display">Powered by Gemini 2.5 Flash</div>
+          </div>
+        </div>
+        <div class="agent-kpis">
+          <div class="agent-kpi">
+            <div class="agent-kpi-val" id="kpi-budget">$500</div>
+            <div class="agent-kpi-lbl">Total Budget</div>
+          </div>
+          <div class="agent-kpi">
+            <div class="agent-kpi-val" id="kpi-remaining" style="color:var(--green)">$500</div>
+            <div class="agent-kpi-lbl">Remaining</div>
+          </div>
+          <div class="agent-kpi">
+            <div class="agent-kpi-val" id="kpi-spent" style="color:var(--accent)">$0</div>
+            <div class="agent-kpi-lbl">Committed</div>
+          </div>
+          <div class="agent-kpi">
+            <div class="agent-kpi-val" id="kpi-saved" style="color:var(--green)">$0</div>
+            <div class="agent-kpi-lbl">Saved vs Retail</div>
+          </div>
+        </div>
+        <div class="agent-chat" id="agent-chat">
+          <div class="sys-msg">Agent chat will appear here once activated</div>
+        </div>
+        <div class="agent-footer" id="agent-footer">Activate the agent to start bidding automatically</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><div class="logo-box" style="width:24px;height:24px;border-radius:5px;font-size:11px">▶</div> StreamVibe</div>
+      <div class="footer-tagline">Live TV, AI-powered ad creation, and live shopping — all in one platform. Powered by free-tier AI.</div>
+      <div class="footer-socials">
+        <a href="#" class="footer-social">𝕏</a>
+        <a href="#" class="footer-social">in</a>
+        <a href="#" class="footer-social">▶</a>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Platform</h4><a href="#">Browse</a><a href="#">Live TV</a><a href="#shop-section">ShopLive</a><a href="#studio-section">Ad Studio</a></div>
+    <div class="footer-col"><h4>Advertisers</h4><a href="#">CTV Campaigns</a><a href="#">AI Creative</a><a href="#">Targeting</a><a href="#">Analytics</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="#">About</a><a href="#">Blog</a><a href="#">Careers</a><a href="#">Contact</a></div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2025 StreamVibe Inc. All rights reserved.</div>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   CONFIG & MODEL REGISTRY
+═══════════════════════════════════════════════════ */
+
+async function callGemini(modelId, body) {
+  const res = await fetch('/api/gemini', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ modelId, body })
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || data.message || 'Gemini API error');
+  return data;
+}
+
+const MODEL_REGISTRY = [
+  // ── Google Gemini Free Tier ──
+  { id:'gemini-2.5-flash',    label:'Gemini 2.5 Flash', provider:'Google',   pColor:'#4285f4', api:'gemini',       tag:'SMART',    tagBg:'rgba(255,90,31,.18)',    tagColor:'#ff8c4b' },
+];
+
+/* ── Universal AI call ── */
+async function callAI(userPrompt, systemPrompt = '', temperature = 0.7) {
+  const m = MODEL_REGISTRY.find(x => x.id === state.currentModel) || MODEL_REGISTRY[0];
+  if (m.api === 'gemini') {
+    const body = { contents:[{ parts:[{ text: userPrompt }] }], generationConfig:{ temperature } };
+    if (systemPrompt) body.system_instruction = { parts:[{ text: systemPrompt }] };
+    const data = await callGemini(m.id, body);
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  } else {
+    const messages = [];
+    if (systemPrompt) messages.push({ role:'system', content: systemPrompt });
+    messages.push({ role:'user', content: userPrompt });
+    const res = await fetch('https://text.pollinations.ai/', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model: m.polModel, messages, temperature })
+    });
+    if (!res.ok) throw new Error(`API error ${res.status} — check connection`);
+    return await res.text();
+  }
+}
+
+/* Safe JSON parser (handles markdown code fences) */
+function safeParseJSON(raw) {
+  const clean = raw.replace(/```json\s*/gi,'').replace(/```\s*/gi,'').trim();
+  const match = clean.match(/\{[\s\S]*\}/);
+  return match ? JSON.parse(match[0]) : JSON.parse(clean);
+}
+
+/* ═══════════════════════════════════════════════════
+  AUCTION DATA
+═══════════════════════════════════════════════════ */
+const auctionItems = [
+  { id:1, emoji:'⌚', name:'Apple Watch Ultra 2',  cat:'Electronics',    bid:280, retail:799,  endMs:Date.now()+8.4*60*1000,  bids:23 },
+  { id:2, emoji:'🎧', name:'Sony WH-1000XM5',      cat:'Electronics',    bid:150, retail:399,  endMs:Date.now()+14.5*60*1000, bids:17 },
+  { id:3, emoji:'👜', name:'Coach Leather Tote',   cat:'Fashion',        bid:180, retail:450,  endMs:Date.now()+5.2*60*1000,  bids:31 },
+  { id:4, emoji:'📺', name:'Samsung 65" QLED 4K',  cat:'Electronics',    bid:520, retail:1299, endMs:Date.now()+22.1*60*1000, bids:12 },
+  { id:5, emoji:'👟', name:'Nike Air Jordan 1',    cat:'Footwear',       bid:195, retail:380,  endMs:Date.now()+11.7*60*1000, bids:38 },
+  { id:6, emoji:'🌀', name:'Dyson V15 Detect',     cat:'Home & Living',  bid:340, retail:749,  endMs:Date.now()+18.3*60*1000, bids:9  },
+];
+
+/* ═══════════════════════════════════════════════════
+  APP STATE
+═══════════════════════════════════════════════════ */
+const state = {
+  currentModel:'gemini-2.5-flash',
+  currentModelLabel:'Gemini 2.5 Flash',
+  agentActive:false,
+  userBudget:500,
+  committedBids:{},   // { itemId: committedAmount }
+  winningIds:[],
+  scenes:[], sceneImages:[],
+  videoPlaying:false, currentScene:0, videoTick:null, elapsed:0, totalDuration:30, grainRunning:false,
+};
+
+/* ─── Budget helpers ─────────────────────────────── */
+function getTotalCommitted() { return Object.values(state.committedBids).reduce((a,b)=>a+b,0); }
+function getRemaining()      { return Math.max(0, state.userBudget - getTotalCommitted()); }
+function getTotalSaved()     {
+  return Object.entries(state.committedBids).reduce((acc,[id,bid])=>{
+    const item = auctionItems.find(i=>i.id===parseInt(id));
+    return acc + (item ? Math.max(0, item.retail - bid) : 0);
+  }, 0);
+}
+
+function updateKPIs() {
+  const committed = getTotalCommitted();
+  const remaining = getRemaining();
+  const saved     = Math.round(getTotalSaved());
+  const winning   = state.winningIds.length;
+
+  animateKPI('kpi-budget',    `$${state.userBudget}`);
+  animateKPI('kpi-remaining', `$${remaining}`);
+  animateKPI('kpi-spent',     `$${committed}`);
+  animateKPI('kpi-saved',     `$${saved}`);
+
+  const pct = remaining / state.userBudget;
+  document.getElementById('kpi-remaining').style.color = pct < 0.2 ? 'var(--red)' : pct < 0.5 ? 'var(--accent2)' : 'var(--green)';
+  updateBudgetBar();
+}
+
+function animateKPI(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.textContent !== val) {
+    el.textContent = val;
+    el.classList.add('bump');
+    setTimeout(()=>el.classList.remove('bump'), 350);
+  }
+}
+
+function updateBudgetBar() {
+  const committed = getTotalCommitted();
+  const pct = state.userBudget > 0 ? Math.min(100, (committed / state.userBudget) * 100) : 0;
+  const fill = document.getElementById('budget-prog-fill');
+  if (fill) {
+    fill.style.width = pct + '%';
+    fill.className = 'budget-prog-bar-fill' + (pct > 80 ? ' high' : '');
+  }
+  setTextSafe('budget-remaining-text', `$${getRemaining()}`);
+  setTextSafe('budget-committed-text', `$${committed}`);
+  setTextSafe('budget-won-text', state.winningIds.length);
+  setTextSafe('budget-saved-text', `$${Math.round(getTotalSaved())}`);
+}
+
+function setTextSafe(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+/* ═══════════════════════════════════════════════════
+   MODEL SELECTOR UI
+═══════════════════════════════════════════════════ */
+function buildModelPills() {
+  const container = document.getElementById('model-pills-container');
+  const providers = [...new Set(MODEL_REGISTRY.map(m=>m.provider))];
+  container.innerHTML = providers.map(prov => {
+    const models = MODEL_REGISTRY.filter(m=>m.provider===prov);
+    const pColor = models[0].pColor;
+    return `
+      <div class="model-provider-group" style="margin-bottom:10px">
+        <div class="model-provider-label">
+          <span class="model-provider-dot" style="background:${pColor}"></span>
+          ${prov}
+        </div>
+        <div class="model-pills-row">
+          ${models.map(m=>`
+            <button class="model-pill${m.id===state.currentModel?' active':''}"
+              id="mpill-${m.id}"
+              onclick="selectModel('${m.id}','${m.label}',this)"
+              style="${m.id===state.currentModel?`--mpill-dot:${m.pColor}`:''}"
+            >
+              <span class="model-dot" style="${m.id===state.currentModel?`background:${m.pColor}`:''}" ></span>
+              ${m.label}
+              ${m.tag ? `<span class="model-tag" style="background:${m.tagBg};color:${m.tagColor}">${m.tag}</span>` : ''}
+            </button>`).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function selectModel(modelId, label, btn) {
+  state.currentModel = modelId;
+  state.currentModelLabel = label;
+  const m = MODEL_REGISTRY.find(x=>x.id===modelId);
+  document.querySelectorAll('.model-pill').forEach(p=>{
+    p.classList.remove('active');
+    p.querySelector('.model-dot').style.background = '';
+    p.style.removeProperty('--mpill-dot');
+  });
+  btn.classList.add('active');
+  btn.querySelector('.model-dot').style.background = m.pColor;
+  document.getElementById('active-model-display').innerHTML =
+    `<span style="width:6px;height:6px;border-radius:50%;background:${m.pColor};animation:pPurple 1.5s infinite;display:inline-block"></span> ${label}`;
+  setTextSafe('agent-model-display', `Powered by ${label} (${m.provider})`);
+  setTextSafe('player-model-tag', label);
+  setTextSafe('ard-model-badge', label);
+  if (state.agentActive) setTextSafe('agent-footer', `${label} monitoring all auctions…`);
+}
+
+/* ═══════════════════════════════════════════════════
+   LIVE STRIP
+═══════════════════════════════════════════════════ */
+const liveChannels = [
+  { icon:'🏀', name:'ESPN Live Sports',    viewers:'2.1M' },
+  { icon:'📰', name:'CNN Breaking News',   viewers:'1.4M' },
+  { icon:'🎬', name:'Netflix Live Events', viewers:'3.7M' },
+  { icon:'⚽', name:'Prime Sports HD',     viewers:'890K' },
+  { icon:'🌍', name:'Discovery+ Live',     viewers:'620K' },
+  { icon:'🎭', name:'HBO Max Originals',   viewers:'1.2M' },
+  { icon:'🔥', name:'Hulu Live TV',        viewers:'2.8M' },
+  { icon:'🎵', name:'Peacock Music Live',  viewers:'445K' },
+  { icon:'🏈', name:'NFL Sunday Ticket',   viewers:'4.1M' },
+];
+function initLiveStrip() {
+  const track = document.getElementById('live-strip-track');
+  const doubled = [...liveChannels, ...liveChannels];
+  track.innerHTML = doubled.map(ch=>`
+    <div class="live-card">
+      <div class="live-card-top">
+        <div class="live-card-icon">${ch.icon}</div>
+        <div class="live-pill"><span class="mini-dot"></span> LIVE</div>
+      </div>
+      <div class="live-card-name">${ch.name}</div>
+      <div class="live-card-viewers">👁 ${ch.viewers} watching</div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════
+   AUCTION UI
+═══════════════════════════════════════════════════ */
+function initAuction() {
+  renderAuctionGrid();
+  setInterval(tickCountdowns, 1000);
+  setInterval(randomBidBump, 16000); // Competitors bid every 16s
+}
+
+function renderAuctionGrid() {
+  const grid = document.getElementById('auction-grid');
+  grid.innerHTML = auctionItems.map(item => {
+    const remaining = getRemainingMs(item);
+    const isEnded   = remaining <= 0;
+    const isWinning = state.winningIds.includes(item.id);
+    const discount  = discPct(item.bid, item.retail);
+    const alreadyCommitted = state.committedBids[item.id] || 0;
+    const nextBid   = item.bid + 10;
+    // Precise additional cost: full nextBid minus what's already committed for this item
+    const additionalCost = nextBid - alreadyCommitted;
+    const canAfford = additionalCost <= getRemaining() && additionalCost > 0 && !isEnded;
+
+    return `
+    <div class="ai-card${isWinning?' winning':''}" id="card-${item.id}">
+      <div class="ai-card-img">
+        <div class="img-bg"></div>
+        <div class="item-emoji">${item.emoji}</div>
+        <div class="timer-badge${remaining < 3*60*1000 && !isEnded?' urgent':''}" id="timer-${item.id}">
+          ${isEnded ? 'ENDED' : formatTime(remaining)}
+        </div>
+        <div class="winning-label">✓ WINNING</div>
+      </div>
+      <div class="ai-card-body">
+        <div class="ai-item-name">${item.name}</div>
+        <div class="ai-item-cat">${item.cat}</div>
+        <div class="price-row">
+          <div>
+            <div class="cbid-lbl">Current Bid</div>
+            <div class="cbid" id="bid-${item.id}">$${item.bid}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="retail-lbl">Retail $${item.retail}</div>
+            <div class="disc-pct">-${discount}% off</div>
+          </div>
+        </div>
+        <div class="bid-bar-wrap">
+          <div class="bid-bar-fill" id="bar-${item.id}" style="width:${bidBarWidth(item)}%"></div>
+        </div>
+        <div class="bid-row">
+          <div class="bid-count" id="bidcount-${item.id}">${item.bids} bids</div>
+          ${isEnded
+            ? `<span class="bid-ended">Auction closed</span>`
+            : `<button class="manual-bid-btn${isWinning?' winning-btn':''}"
+                 onclick="manualBid(${item.id})"
+                 ${!canAfford ? 'disabled style="opacity:.4;cursor:not-allowed"' : ''}>
+                 ${isWinning ? `Raise +$10 ($${nextBid})` : `Bid $${nextBid}`}
+               </button>`
+          }
+        </div>
+        ${alreadyCommitted > 0 && isWinning ? `<div style="font-size:10px;color:var(--green);margin-top:6px;text-align:right">✓ $${alreadyCommitted} committed from bag</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateCardBid(item) {
+  const bidEl   = document.getElementById(`bid-${item.id}`);
+  const barEl   = document.getElementById(`bar-${item.id}`);
+  const countEl = document.getElementById(`bidcount-${item.id}`);
+  if (bidEl) { bidEl.textContent=`$${item.bid}`; bidEl.classList.add('flash'); setTimeout(()=>bidEl.classList.remove('flash'),700); }
+  if (barEl) barEl.style.width = bidBarWidth(item)+'%';
+  if (countEl) countEl.textContent=`${item.bids} bids`;
+}
+
+function getRemainingMs(item) { return Math.max(0, item.endMs - Date.now()); }
+function discPct(bid, retail)  { return Math.round((1 - bid/retail) * 100); }
+function bidBarWidth(item)     { return Math.min(95, Math.round((item.bid / item.retail) * 100)); }
+function formatTime(ms) {
+  const totalS = Math.floor(ms/1000);
+  const m = Math.floor(totalS/60), s = totalS%60;
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function tickCountdowns() {
+  auctionItems.forEach(item => {
+    const ms = getRemainingMs(item);
+    const el = document.getElementById(`timer-${item.id}`);
+    if (!el) return;
+    el.textContent = ms > 0 ? formatTime(ms) : 'ENDED';
+    el.className = `timer-badge${ms<3*60*1000 && ms>0?' urgent':''}`;
+  });
+}
+
+/* Competitor bidding — can outbid user 25% of the time on winning items */
+function randomBidBump() {
+  const roll = Math.random();
+  const winningActive = auctionItems.filter(i => state.winningIds.includes(i.id) && getRemainingMs(i) > 30000);
+
+  if (roll < 0.25 && winningActive.length > 0) {
+    // Competitor outbids user on one of their winning items
+    const item = winningActive[Math.floor(Math.random() * winningActive.length)];
+    const bump = Math.floor(Math.random()*20)+10;
+    item.bid += bump;
+    item.bids++;
+    // Release user's commitment — they're no longer winning
+    state.winningIds = state.winningIds.filter(id=>id!==item.id);
+    delete state.committedBids[item.id];
+    updateKPIs();
+    renderAuctionGrid(); // Full re-render to show not-winning state
+    updateCardBid(item);
+    // Flash outbid
+    const card = document.getElementById(`card-${item.id}`);
+    if (card) { card.classList.add('outbid-flash'); setTimeout(()=>card.classList.remove('outbid-flash'),900); }
+    if (state.agentActive) {
+      addAgentMsg(`<strong>${item.name}</strong><div class="amsg-outbid-tag">⚡ Outbid! Competitor raised to $${item.bid}. Budget released ✓</div>`);
+    }
+  } else {
+    // Normal competitor bid on non-winning items
+    const active = auctionItems.filter(i=>getRemainingMs(i)>30000 && !state.winningIds.includes(i.id));
+    if (!active.length) return;
+    const item = active[Math.floor(Math.random()*active.length)];
+    item.bid += Math.floor(Math.random()*15)+5;
+    item.bids++;
+    updateCardBid(item);
+    // Update button
+    const card = document.getElementById(`card-${item.id}`);
+    if (card) {
+      const btn = card.querySelector('.manual-bid-btn');
+      if (btn && !btn.classList.contains('winning-btn')) btn.textContent = `Bid $${item.bid+10}`;
+    }
+  }
+}
+
+function manualBid(id) {
+  const item = auctionItems.find(i=>i.id===id);
+  if (!item || getRemainingMs(item) <= 0) return;
+  const newBid = item.bid + 10;
+  const alreadyCommitted = state.committedBids[id] || 0;
+  const additionalCost = newBid - alreadyCommitted;
+  const remaining = getRemaining();
+  if (additionalCost > remaining) {
+    addAgentMsg(`⚠️ Can't bid $${newBid} on <strong>${item.name}</strong> — only <strong>$${remaining}</strong> left in bag (need $${additionalCost} more).`);
+    return;
+  }
+  item.bid = newBid;
+  item.bids++;
+  state.committedBids[id] = newBid;
+  if (!state.winningIds.includes(id)) state.winningIds.push(id);
+  updateKPIs();
+  updateCardBid(item);
+  flashCard(id);
+  renderAuctionGrid();
+  addAgentMsg(`✅ Manual bid of <strong>$${newBid}</strong> on <strong>${item.name}</strong> — ${discPct(newBid, item.retail)}% below retail. $${additionalCost} deducted from bag.`, false);
+}
+
+function flashCard(id) {
+  const card = document.getElementById(`card-${id}`);
+  if (!card) return;
+  card.style.boxShadow='0 0 36px rgba(30,204,110,.5)';
+  setTimeout(()=>{ if(card) card.style.boxShadow=''; },1400);
+}
+
+function updateBudgetDisplay() {
+  const input = document.getElementById('budget-input');
+  const committed = getTotalCommitted();
+  let nextBudget = parseInt(input.value, 10);
+
+  if (Number.isNaN(nextBudget)) nextBudget = 500;
+  nextBudget = Math.max(50, Math.min(10000, nextBudget));
+
+  if (nextBudget < committed) nextBudget = committed;
+  input.value = nextBudget;
+  state.userBudget = nextBudget;
+  updateKPIs();
+}
+
+/* ═══════════════════════════════════════════════════
+   AI BIDDING AGENT
+═══════════════════════════════════════════════════ */
+function toggleAgent() {
+  state.agentActive = !state.agentActive;
+  const btn = document.getElementById('activate-btn');
+  const indicator = document.getElementById('agent-status-indicator');
+  const panel = document.getElementById('agent-panel');
+  if (state.agentActive) {
+    btn.textContent = '⏹ Stop Agent';
+    btn.classList.add('agent-on');
+    indicator.className = 'agent-status-indicator on';
+    indicator.innerHTML = '<div class="asdot"></div> Agent Active';
+    panel.classList.add('active-state');
+    setTextSafe('agent-footer', `${state.currentModelLabel} monitoring all auctions…`);
+    runAgent();
+  } else {
+    btn.textContent = '🤖 Activate AI Agent';
+    btn.classList.remove('agent-on');
+    indicator.className = 'agent-status-indicator';
+    indicator.innerHTML = '<div class="asdot"></div> Agent Offline';
+    panel.classList.remove('active-state');
+    setTextSafe('agent-footer', 'Agent paused — click to resume');
+  }
+}
+
+async function runAgent() {
+  updateBudgetDisplay();
+  document.getElementById('agent-chat').innerHTML = '';
+  const remaining = getRemaining();
+  const m = MODEL_REGISTRY.find(x=>x.id===state.currentModel);
+
+  addAgentMsg(`🔍 Agent activated via <strong>${state.currentModelLabel}</strong> (${m.provider})<br>Scanning ${auctionItems.length} auctions with <strong>$${remaining}</strong> available.`);
+
+  const auctionSummary = auctionItems.map(i=>{
+    const ms = getRemainingMs(i);
+    const alreadyWinning = state.winningIds.includes(i.id);
+    const committed = state.committedBids[i.id] || 0;
+    const nextBid = i.bid + 10;
+    const additionalCost = nextBid - committed; // Precise cost from remaining budget
+    return `ID:${i.id}|${i.name}|CurrentBid:$${i.bid}|NextBid:$${nextBid}|AddlCostFromBudget:$${additionalCost}|Retail:$${i.retail}|Discount:${discPct(i.bid,i.retail)}%|TimeLeft:${ms>0?formatTime(ms):'ENDED'}|AlreadyWinning:${alreadyWinning}|Committed:$${committed}`;
+  }).join('\n');
+
+  const prompt = `You are the ShopLive AI Bid Agent. Analyze these live auction items and decide how to use the user's remaining budget.
+
+BUDGET:
+- Total bag: $${state.userBudget}
+- Remaining available: $${remaining}
+- Already committed: $${getTotalCommitted()}
+
+LIVE AUCTION ITEMS:
+${auctionSummary}
+
+STRICT RULES:
+1. action:"bid" — place a bid. The "amount" must equal CurrentBid + 10.
+2. ONLY bid if: AddlCostFromBudget <= remaining AND Discount >= 38% AND TimeLeft shows > 1 min AND NOT ended.
+3. Sum of all AddlCostFromBudget for "bid" actions MUST NOT exceed $${remaining}.
+4. action:"watch" — monitor item (discount 25-37% or marginal budget).
+5. action:"skip" — skip (low discount, ended, < 1min, or budget insufficient).
+6. If AlreadyWinning=true: recommend "hold" or "watch" (agent already committed).
+7. Prioritize highest-discount items first when budget is limited.
+
+CRITICAL: Respond ONLY with valid compact JSON. No markdown, no code blocks, no text before or after.
+{"decisions":[{"item":1,"action":"bid","amount":290,"reason":"65% off, great value"},{"item":2,"action":"watch","reason":"monitoring trend"}]}
+
+Include ALL ${auctionItems.length} items. Keep each "reason" under 6 words. Start with { end with }. JSON ONLY.`;
+
+  try {
+    const raw = await callAI(prompt, 'You are a JSON-only auction bidding agent. Always respond with pure JSON, never markdown.', 0.15);
+    const parsed = safeParseJSON(raw);
+
+    let spentThisRound = 0;
+    for (const d of parsed.decisions) {
+      await sleep(600 + Math.random()*500);
+      const item = auctionItems.find(i=>i.id===d.item);
+      if (!item) continue;
+      const ms = getRemainingMs(item);
+
+      if (d.action === 'bid') {
+        const bidAmt = d.amount || (item.bid + 10);
+        const alreadyCommitted = state.committedBids[item.id] || 0;
+        const additionalCost = bidAmt - alreadyCommitted;
+        const curRemaining = getRemaining();
+
+        if (ms <= 0) { addAgentMsg(`<strong>${item.name}</strong><div class="amsg-skip-tag">⏰ Skipped — auction ended</div>`); continue; }
+        if (additionalCost <= 0) { addAgentMsg(`<strong>${item.name}</strong><div class="amsg-watch-tag">👁 Holding — already committed $${alreadyCommitted}</div>`); continue; }
+        if (additionalCost > curRemaining) {
+          addAgentMsg(`<strong>${item.name}</strong><div class="amsg-budget-warn">⚠️ Skip — needs $${additionalCost} but only $${curRemaining} left</div>`);
+          continue;
+        }
+        item.bid = bidAmt; item.bids++;
+        state.committedBids[item.id] = bidAmt;
+        spentThisRound += additionalCost;
+        if (!state.winningIds.includes(item.id)) state.winningIds.push(item.id);
+        updateKPIs(); updateCardBid(item); flashCard(item.id); renderAuctionGrid();
+        addAgentMsg(`<strong>${item.name}</strong><div class="amsg-bid-tag">✅ Bid $${bidAmt} — ${discPct(bidAmt,item.retail)}% off retail — ${d.reason}</div>`);
+
+      } else if (d.action === 'watch') {
+        addAgentMsg(`<strong>${item.name}</strong><div class="amsg-watch-tag">👁 Watching — ${d.reason}</div>`);
+      } else {
+        addAgentMsg(`<strong>${item.name}</strong><div class="amsg-skip-tag">⏭ Skipped — ${d.reason}</div>`);
+      }
+    }
+
+    if (state.agentActive) {
+      await sleep(1500);
+      const finalRemaining = getRemaining();
+      const won = state.winningIds.length;
+      addAgentMsg(`✅ Sweep complete. Committed <strong>$${spentThisRound}</strong> this round · <strong>$${finalRemaining}</strong> remaining in bag · ${won>0?`Winning ${won} item${won!==1?'s':''}`:'No bids placed'}. Watching…`);
+      setTextSafe('agent-footer', `Next sweep in 30s · $${finalRemaining} remaining`);
+      setTimeout(()=>{ if(state.agentActive) runAgent(); }, 30000);
+    }
+  } catch(err) {
+    addAgentMsg(`⚠️ Agent error: ${err.message}. Retrying in 12s…`);
+    if (state.agentActive) setTimeout(runAgent, 12000);
+  }
+}
+
+function addAgentMsg(html, isAgent=true) {
+  const chat = document.getElementById('agent-chat');
+  const msg = document.createElement('div');
+  msg.className='agent-msg';
+  msg.innerHTML = `${isAgent?`<div class="amsg-ava">🤖</div>`:''}<div class="amsg-bubble">${html}</div>`;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ═══════════════════════════════════════════════════
+   AD GENERATION
+═══════════════════════════════════════════════════ */
+function switchTab(tab) {
+  document.getElementById('tab-url').classList.toggle('active', tab==='url');
+  document.getElementById('tab-maps').classList.toggle('active', tab==='maps');
+  document.getElementById('main-input').placeholder = tab==='url'
+    ? 'Enter your business URL (e.g. https://yourbiz.com)'
+    : 'Enter your business name (e.g. Joe\'s Pizza NYC)';
+}
+
+async function generateAd() {
+  const input = document.getElementById('main-input').value.trim();
+  if (!input) { document.getElementById('main-input').focus(); return; }
+
+  const btn = document.getElementById('gen-btn');
+  const loading = document.getElementById('loading-overlay');
+  const result  = document.getElementById('ad-result');
+  const lText   = document.getElementById('loading-text');
+  const m = MODEL_REGISTRY.find(x=>x.id===state.currentModel);
+
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner" style="width:16px;height:16px"></div> Crafting with ${m.label}…`;
+  result.style.display = 'none';
+  document.getElementById('info-cards').style.display = 'none';
+  loading.classList.add('visible');
+  // Reset loading bar
+  const lb = document.getElementById('loading-bar');
+  lb.style.animation='none'; lb.offsetHeight; lb.style.animation='';
+
+  const steps = [
+    `Analyzing with ${state.currentModelLabel}…`,
+    'Crafting the commercial concept…',
+    'Writing your TV ad script…',
+    'Adding cinematic scene details…'
+  ];
+  let step=0;
+  const ticker = setInterval(()=>{ step=(step+1)%steps.length; lText.textContent=steps[step]; }, 1600);
+
+  const sysPrompt = `You are an expert CTV advertising scriptwriter and brand strategist. You create emotionally compelling, conversion-focused TV commercials with vivid, cinematically rich scene descriptions.`;
+
+  const userPrompt = `Create a compelling 30-second Connected TV commercial script for: ${input}
+
+Format EXACTLY as follows (use these exact labels):
+
+🎬 CONCEPT: [One punchy concept sentence]
+
+📍 SCENE 1 (0-8s): [Opening visual — be very specific and cinematically descriptive: lighting, camera angle, setting, motion, atmosphere, colors]
+
+📣 VOICEOVER 1: "[Spoken words — punchy and emotional]"
+
+📍 SCENE 2 (8-16s): [Middle visual — dynamic action, benefit demonstration, specific and vivid]
+
+📣 VOICEOVER 2: "[Spoken words]"
+
+📍 SCENE 3 (16-24s): [Climax visual — emotional peak, most dramatic moment, ultra-specific]
+
+📣 VOICEOVER 3: "[Spoken words]"
+
+📍 SCENE 4 (24-30s): [CTA visual — product/logo, clean brand shot, call to action visual]
+
+📣 CTA: "[Call to action — 3-8 words]"
+
+🎯 TARGET AUDIENCE: [2-sentence description]
+📊 ESTIMATED REACH: [realistic number, e.g. "4.2M households"]
+
+Make scene descriptions vivid enough to work as image generation prompts. Be specific about: lighting quality, camera perspective, subject matter, mood, color palette.`;
+
+  try {
+    const scriptText = await callAI(userPrompt, sysPrompt, 0.75);
+    clearInterval(ticker); loading.classList.remove('visible');
+    document.getElementById('ad-script-text').textContent = scriptText;
+    setTextSafe('ard-model-badge', state.currentModelLabel);
+    result.style.display = 'block';
+
+    const audienceMatch = scriptText.match(/🎯 TARGET AUDIENCE: ([^\n]+)/);
+    const reachMatch    = scriptText.match(/📊 ESTIMATED REACH: ([^\n]+)/);
+    if (audienceMatch) {
+      document.getElementById('vic-audience').textContent = audienceMatch[1].substring(0,70)+'…';
+      document.getElementById('vic-reach').innerHTML = `<span class="ac">${reachMatch ? reachMatch[1] : '—'}</span>`;
+      document.getElementById('info-cards').style.display = 'grid';
+    }
+  } catch(err) {
+    clearInterval(ticker); loading.classList.remove('visible');
+    document.getElementById('ad-script-text').textContent = `⚠️ Error: ${err.message}\n\nTip: Try selecting a different model above.`;
+    result.style.display = 'block';
+  }
+
+  btn.disabled=false;
+  btn.innerHTML=`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Generate Ad Campaign`;
+}
+
+function copyScript() {
+  const scriptText = document.getElementById('ad-script-text').textContent;
+  const btn = document.querySelector('#ad-result .ard-actions .action-btn:nth-child(2)');
+  navigator.clipboard.writeText(scriptText)
+    .then(()=>{
+      if (!btn) return;
+      const original = btn.textContent;
+      btn.textContent='✓ Copied!';
+      setTimeout(()=>{ btn.textContent = original; },1500);
+    })
+    .catch(()=>{
+      if (!btn) return;
+      const original = btn.textContent;
+      btn.textContent='⚠ Copy failed';
+      setTimeout(()=>{ btn.textContent = original; },1800);
+    });
+}
+
+function copyScript() {
+  const scriptText = document.getElementById('ad-script-text').textContent;
+  const btn = document.querySelector('#ad-result .ard-actions .action-btn:nth-child(2)');
+  navigator.clipboard.writeText(scriptText)
+    .then(()=>{
+      if (!btn) return;
+      const original = btn.textContent;
+      btn.textContent='✓ Copied!';
+      setTimeout(()=>{ btn.textContent = original; },1500);
+    })
+    .catch(()=>{
+      if (!btn) return;
+      const original = btn.textContent;
+      btn.textContent='⚠ Copy failed';
+      setTimeout(()=>{ btn.textContent = original; },1800);
+    });
+}
+
+/* ═══════════════════════════════════════════════════
+   AI VIDEO GENERATION — Enhanced
+═══════════════════════════════════════════════════ */
+function parseScenes(scriptText) {
+  const sceneDescs = [...scriptText.matchAll(/📍 SCENE \d+[^:]*: ([^\n]+)/g)].map(m=>m[1].trim());
+  const voiceovers  = [...scriptText.matchAll(/📣 (?:VOICEOVER \d+|CTA): "([^"]+)"/g)].map(m=>m[1].trim());
+  const count = Math.min(4, sceneDescs.length || 0);
+  if (!count) return [];
+  const sceneDurationMs = Math.round((state.totalDuration / count) * 1000);
+  return sceneDescs.slice(0, count).map((desc,i)=>({ description:desc, voiceover:voiceovers[i]||'', duration:sceneDurationMs }));
+}
+
+/* Cinematic image prompt builder — scene-aware */
+function buildImagePrompt(sceneDesc, idx) {
+  const cameraStyles = [
+    'sweeping wide establishing shot, golden hour warm sunlight, atmospheric haze, cinematic depth-of-field, hopeful mood',
+    'dynamic medium shot, vibrant natural lighting, motion energy, authentic emotion, journalistic immediacy',
+    'dramatic close-up with shallow bokeh, Rembrandt lighting, intense emotional peak, high contrast shadows',
+    'clean premium product hero shot, bright diffused studio lighting, ultra-sharp detail, brand-forward composition'
+  ];
+  const colorGrades = [
+    'warm teal-and-orange Hollywood color grade, film grain',
+    'rich saturated colors, golden highlights, commercial freshness',
+    'moody high-contrast, selective desaturation, cinematic vignette',
+    'crisp clean whites, bright airy feel, premium brand identity'
+  ];
+  const s = cameraStyles[idx%4];
+  const c = colorGrades[idx%4];
+  return `${sceneDesc}, ${s}, ${c}, 4K cinematic commercial photography, anamorphic 2.39:1 lens, professional color grading, award-winning advertisement photography, ultra-detailed, 16:9`;
+}
+
+function pollinationsUrl(prompt, seed) {
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1920&height=1080&nologo=true&seed=${seed}&enhance=true&model=flux`;
+}
+
+async function generateVideo() {
+  const scriptText = document.getElementById('ad-script-text').textContent;
+  state.scenes = parseScenes(scriptText);
+  if (state.scenes.length === 0) { alert('Please generate an ad script first.'); return; }
+
+  if (state.videoTick) clearInterval(state.videoTick);
+  state.elapsed=0; state.currentScene=0; state.videoPlaying=false;
+
+  document.getElementById('video-placeholder').style.display='none';
+  document.getElementById('ai-player').classList.remove('active');
+  document.getElementById('video-info-cards').style.display='none';
+  document.getElementById('scene-timeline').classList.remove('visible');
+  const progFill = document.getElementById('vg-prog-fill');
+
+  const genEl = document.getElementById('video-generating');
+  genEl.classList.add('active');
+  setTextSafe('vg-sub-text', `Rendering ${state.scenes.length} scenes via Pollinations Flux HD`);
+
+  const progGrid = document.getElementById('scene-prog-grid');
+  progGrid.innerHTML = state.scenes.map((_,i)=>`
+    <div class="spg-item" id="spg-${i}">
+      <div class="spg-loading-spin"><div class="spinner" style="width:14px;height:14px"></div></div>
+      <div style="font-size:9px;margin-top:4px;color:var(--muted)">Scene ${i+1}</div>
+    </div>`).join('');
+  setTextSafe('gen-count-text', `0 / ${state.scenes.length} rendering…`);
+  if (progFill) progFill.style.width='0%';
+
+  state.sceneImages = new Array(state.scenes.length).fill(null);
+  let loadedCount = 0;
+
+  const promises = state.scenes.map((scene, i) => {
+    document.getElementById(`spg-${i}`)?.classList.add('loading');
+    return new Promise((resolve) => {
+      const seed  = 1337 + i * 179;
+      const imgPrompt = buildImagePrompt(scene.description, i);
+      const url   = pollinationsUrl(imgPrompt, seed);
+      const img   = new Image();
+      img.crossOrigin = 'anonymous';
+      const done = (src) => {
+        state.sceneImages[i] = src;
+        loadedCount++;
+        const pct = (loadedCount/state.scenes.length)*100;
+        if (progFill) progFill.style.width = pct+'%';
+        const tile = document.getElementById(`spg-${i}`);
+        if (tile) {
+          tile.classList.remove('loading'); tile.classList.add('done');
+          tile.innerHTML = `<div class="spg-thumb" style="background-image:url('${src}')"></div><div class="spg-label">Scene ${i+1} ✓</div>`;
+        }
+        setTextSafe('gen-count-text', `${loadedCount} / ${state.scenes.length} scenes ready`);
+        resolve();
+      };
+      img.onload  = () => done(img.src);
+      img.onerror = () => {
+        // Graceful fallback with gradient
+        const fallback = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='hsl(${i*60+200},40%,8%)'/><stop offset='1' stop-color='hsl(${i*60+240},30%,14%)'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g)'/></svg>`;
+        done(fallback);
+      };
+      img.src = url;
+    });
+  });
+
+  await Promise.all(promises);
+
+  buildVideoPlayer();
+  genEl.classList.remove('active');
+  document.getElementById('ai-player').classList.add('active');
+  document.getElementById('video-info-cards').style.display='grid';
+  buildSceneTimeline();
+  setTextSafe('scene-count-badge', `×${state.scenes.length}`);
+  const m = MODEL_REGISTRY.find(x=>x.id===state.currentModel);
+  setTextSafe('vic-provider', `${m.label} + Pollinations`);
+  startGrain();
+  playVideo();
+}
+
+function buildVideoPlayer() {
+  const player = document.getElementById('ai-player');
+  player.querySelectorAll('.scene-frame').forEach(f=>f.remove());
+  state.scenes.forEach((scene, i)=>{
+    const frame = document.createElement('div');
+    frame.className=`scene-frame${i===0?' visible':''}`;
+    frame.id=`sf-${i}`; frame.setAttribute('data-kb', i%4);
+    if (state.sceneImages[i]) {
+      frame.innerHTML=`<img src="${state.sceneImages[i]}" alt="Scene ${i+1}" loading="eager">`;
+    } else {
+      frame.innerHTML=`<div class="scene-frame-fallback" style="background:linear-gradient(135deg,hsl(${i*60},35%,8%),hsl(${i*60+40},25%,14%))"></div>`;
+    }
+    player.insertBefore(frame, player.querySelector('.grain-canvas'));
+  });
+  state.currentScene=0; state.elapsed=0;
+  updatePlayerUI();
+}
+
+function buildSceneTimeline() {
+  const tl = document.getElementById('scene-timeline');
+  tl.innerHTML = state.scenes.map((sc,i)=>`
+    <div class="scene-thumb${i===0?' active':''}" id="sthumb-${i}" onclick="jumpToScene(${i})">
+      ${state.sceneImages[i]
+        ? `<img src="${state.sceneImages[i]}" alt="Scene ${i+1}">`
+        : `<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${i*60},35%,12%),hsl(${i*60+40},25%,18%))"></div>`}
+      <div class="scene-thumb-num">S${i+1}</div>
+      <div class="scene-thumb-play">▶</div>
+    </div>`).join('');
+  tl.classList.add('visible');
+}
+
+function getSceneDurationSeconds() {
+  return state.scenes.length ? state.totalDuration / state.scenes.length : 0;
+}
+
+function jumpToScene(idx) {
+  const sceneDuration = getSceneDurationSeconds();
+  state.elapsed = idx * sceneDuration;
+  state.currentScene=idx;
+  document.querySelectorAll('.scene-frame').forEach(f=>f.classList.remove('visible'));
+  restartKenBurns(idx);
+  document.getElementById(`sf-${idx}`)?.classList.add('visible');
+  updatePlayerUI(); updateTimelineThumb(idx);
+  showSceneTitle(idx);
+}
+
+function updateTimelineThumb(idx) {
+  document.querySelectorAll('.scene-thumb').forEach((t,i)=>t.classList.toggle('active',i===idx));
+}
+
+function showSceneTitle(idx) {
+  const el = document.getElementById('player-scene-title');
+  if (!el) return;
+  const scene = state.scenes[idx];
+  el.textContent = scene?.description?.split(',')[0] || `Scene ${idx+1}`;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+/* Film grain via canvas */
+let grainAnimId = null;
+function startGrain() {
+  const canvas = document.getElementById('grain-canvas');
+  if (!canvas) return;
+  const player = document.getElementById('ai-player');
+  canvas.width  = player.offsetWidth  || 640;
+  canvas.height = player.offsetHeight || 360;
+  const ctx = canvas.getContext('2d');
+  if (grainAnimId) cancelAnimationFrame(grainAnimId);
+  function drawGrain() {
+    const imgData = ctx.createImageData(canvas.width, canvas.height);
+    const d = imgData.data;
+    for (let i=0; i<d.length; i+=4) {
+      const n=(Math.random()*255)|0; d[i]=d[i+1]=d[i+2]=n; d[i+3]=255;
+    }
+    ctx.putImageData(imgData, 0, 0);
+    grainAnimId = requestAnimationFrame(drawGrain);
+  }
+  drawGrain();
+}
+
+function restartKenBurns(idx) {
+  const frame = document.getElementById(`sf-${idx}`);
+  if (!frame) return;
+  const img = frame.querySelector('img');
+  if (!img) return;
+  img.style.animation='none'; img.offsetHeight; img.style.animation='';
+}
+
+function promptGenerate() {
+  document.getElementById('main-input').focus();
+  document.getElementById('main-input').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+/* Player Controls */
+function playVideo() {
+  state.videoPlaying=true;
+  document.getElementById('play-icon').style.display='none';
+  document.getElementById('pause-icon').style.display='';
+  clearInterval(state.videoTick);
+  state.videoTick=setInterval(tickVideo,100);
+}
+
+function pauseVideo() {
+  state.videoPlaying=false;
+  document.getElementById('play-icon').style.display='';
+  document.getElementById('pause-icon').style.display='none';
+  clearInterval(state.videoTick);
+}
+
+function togglePlay() { if(state.videoPlaying) pauseVideo(); else playVideo(); }
+
+function restartVideo() {
+  state.elapsed=0; state.currentScene=0;
+  document.querySelectorAll('.scene-frame').forEach((f,i)=>{
+    f.classList.toggle('visible',i===0);
+    if(i===0) restartKenBurns(0);
+  });
+  updatePlayerUI(); updateTimelineThumb(0);
+  showSceneTitle(0);
+  if(state.videoPlaying) playVideo();
+}
+
+function tickVideo() {
+  state.elapsed += 0.1;
+  if (state.elapsed >= state.totalDuration) state.elapsed=0;
+  const sceneDuration = getSceneDurationSeconds() || state.totalDuration;
+  const sceneIdx = Math.min(Math.floor(state.elapsed / sceneDuration), state.scenes.length-1);
+  if (sceneIdx !== state.currentScene) {
+    // Scene transition with flash
+    const flash = document.getElementById('scene-flash');
+    if (flash) { flash.classList.add('flash-on'); setTimeout(()=>flash.classList.remove('flash-on'),100); }
+    document.getElementById(`sf-${state.currentScene}`)?.classList.remove('visible');
+    state.currentScene=sceneIdx;
+    restartKenBurns(sceneIdx);
+    document.getElementById(`sf-${sceneIdx}`)?.classList.add('visible');
+    updateTimelineThumb(sceneIdx);
+    showSceneTitle(sceneIdx);
+    // Voiceover fade
+    const vo=document.getElementById('player-voiceover');
+    vo.classList.add('hidden');
+    setTimeout(()=>vo.classList.remove('hidden'),400);
+  }
+  updatePlayerUI();
+}
+
+function updatePlayerUI() {
+  const pct = (state.elapsed/state.totalDuration)*100;
+  document.getElementById('player-progress-fill').style.width=pct+'%';
+  const totalS=Math.floor(state.elapsed);
+  const m=Math.floor(totalS/60), s=totalS%60;
+  setTextSafe('player-time', `${m}:${s.toString().padStart(2,'0')} / 0:30`);
+  setTextSafe('player-scene-count', `Scene ${state.currentScene+1} / ${state.scenes.length}`);
+  const vo=state.scenes[state.currentScene]?.voiceover||'';
+  setTextSafe('player-voiceover', vo ? `"${vo}"` : '');
+}
+
+function seekVideo(e, bar) {
+  const rect=bar.getBoundingClientRect();
+  const x=Math.max(0,e.clientX-rect.left);
+  const newElapsed=(x/rect.width)*state.totalDuration;
+  const sceneDuration = getSceneDurationSeconds() || state.totalDuration;
+  const newSceneIdx=Math.min(Math.floor(newElapsed / sceneDuration),state.scenes.length-1);
+  if (newSceneIdx!==state.currentScene) {
+    document.getElementById(`sf-${state.currentScene}`)?.classList.remove('visible');
+    state.currentScene=newSceneIdx;
+    restartKenBurns(newSceneIdx);
+    document.getElementById(`sf-${newSceneIdx}`)?.classList.add('visible');
+    updateTimelineThumb(newSceneIdx);
+  }
+  state.elapsed=newElapsed;
+  updatePlayerUI();
+}
+
+/* ═══════════════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════════════ */
+const modalTemplates = {
+  login: ()=>`
+    <h2 id="modal-title">Welcome back</h2><p>Sign in to your StreamVibe account.</p>
+    <div class="modal-field"><label for="login-email">Email</label><input id="login-email" type="email" placeholder="you@company.com"/></div>
+    <div class="modal-field"><label for="login-password">Password</label><input id="login-password" type="password" placeholder="••••••••"/></div>
+    <button class="btn-primary modal-submit">Sign In →</button>
+    <p style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)">No account? <a href="#" style="color:var(--accent)" onclick="switchModal('signup')">Sign up free</a></p>`,
+  signup: ()=>`
+    <h2 id="modal-title">Start for free</h2><p>Stream live, create AI ads, and win auctions — all in one place.</p>
+    <div class="modal-field"><label for="signup-name">Full Name</label><input id="signup-name" type="text" placeholder="Your name"/></div>
+    <div class="modal-field"><label for="signup-email">Email</label><input id="signup-email" type="email" placeholder="you@company.com"/></div>
+    <div class="modal-field"><label for="signup-password">Password</label><input id="signup-password" type="password" placeholder="Choose a password"/></div>
+    <button class="btn-primary modal-submit" onclick="handleSignup()">Create Free Account →</button>
+    <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted)">By signing up you agree to our Terms</p>`,
+};
+
+let lastFocusedElement = null;
+function openModal(type){
+  lastFocusedElement = document.activeElement;
+  document.getElementById('modal-content').innerHTML=modalTemplates[type]?.()||'';
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-overlay').setAttribute('aria-hidden', 'false');
+  const title = document.querySelector('#modal-content h2');
+  if (title) title.id = 'modal-title';
+  const firstField = document.querySelector('#modal-content input, #modal-content button, #modal-content a');
+  if (firstField) firstField.focus();
+}
+function switchModal(type){ openModal(type); }
+function closeModal(e){ if(e.target===document.getElementById('modal-overlay')) closeModalDirect(); }
+function closeModalDirect(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-overlay').setAttribute('aria-hidden', 'true');
+  if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
+}
+function handleSignup(){
+  document.getElementById('modal-content').innerHTML=`
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:48px;margin-bottom:16px">🎉</div>
+      <h2 id="modal-title">You're In!</h2>
+      <p style="margin:10px 0 24px">Welcome to StreamVibe. Start creating ads or join a live auction!</p>
+      <button class="btn-primary modal-submit" onclick="closeModalDirect()">Let's Go →</button>
+    </div>`;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════════════ */
+function initScrollReveal() {
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold:0.08 });
+  document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', ()=>{
+  buildModelPills();
+  initLiveStrip();
+  initAuction();
+  initScrollReveal();
+  updateKPIs();
+
+  document.getElementById('main-input').addEventListener('keydown', e=>{
+    if (e.key==='Enter') generateAd();
+  });
+  document.getElementById('budget-input').addEventListener('input', updateBudgetDisplay);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('modal-overlay').classList.contains('open')) {
+      closeModalDirect();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (document.getElementById('ai-player').classList.contains('active')) startGrain();
+  });
+});
+</script>
+</body>
+</html>
