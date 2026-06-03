@@ -765,26 +765,94 @@ function getGeminiUrl(modelId, apiKey) {
 }
 
 async function callGemini(modelId, body) {
+  console.log('[Gemini] callGemini start', {
+    protocol: window.location.protocol,
+    modelId,
+    hasBody: !!body,
+    hasApiKeyInEnv: !!window.ENV?.GEMINI_API_KEY
+  });
+
   if (window.location.protocol === 'file:') {
     const apiKey = window.ENV?.GEMINI_API_KEY || '';
     if (!apiKey) throw new Error('Missing GEMINI_API_KEY in env.js');
-    const res = await fetch(getGeminiUrl(modelId, apiKey), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+
+    const url = getGeminiUrl(modelId, apiKey);
+    console.log('[Gemini] file mode request', {
+      urlPreview: url.replace(apiKey, '***redacted***'),
+      bodyPreview: JSON.stringify(body).slice(0, 300)
     });
-    const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data?.error?.message || data.error || 'Gemini API error');
+
+    let res;
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+    } catch (fetchError) {
+      console.error('[Gemini] file mode fetch failed', fetchError);
+      throw fetchError;
+    }
+
+    const rawText = await res.text();
+    console.log('[Gemini] file mode response', {
+      ok: res.ok,
+      status: res.status,
+      rawPreview: rawText.slice(0, 500)
+    });
+
+    let data;
+    try {
+      data = rawText ? JSON.parse(rawText) : {};
+    } catch (parseError) {
+      console.error('[Gemini] file mode JSON parse failed', parseError);
+      throw new Error(`Gemini returned non-JSON response: ${rawText.slice(0, 200)}`);
+    }
+
+    if (!res.ok || data.error) {
+      console.error('[Gemini] file mode API error', data);
+      throw new Error(data?.error?.message || data.error || 'Gemini API error');
+    }
     return data;
   }
 
-  const res = await fetch('/api/gemini', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ modelId, body })
+  console.log('[Gemini] proxy mode request', {
+    endpoint: '/api/gemini',
+    modelId,
+    bodyPreview: JSON.stringify(body).slice(0, 300)
   });
-  const data = await res.json();
-  if (!res.ok || data.error) throw new Error(data.error || data.message || 'Gemini API error');
+
+  let res;
+  try {
+    res = await fetch('/api/gemini', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ modelId, body })
+    });
+  } catch (fetchError) {
+    console.error('[Gemini] proxy fetch failed', fetchError);
+    throw fetchError;
+  }
+
+  const rawText = await res.text();
+  console.log('[Gemini] proxy response', {
+    ok: res.ok,
+    status: res.status,
+    rawPreview: rawText.slice(0, 500)
+  });
+
+  let data;
+  try {
+    data = rawText ? JSON.parse(rawText) : {};
+  } catch (parseError) {
+    console.error('[Gemini] proxy JSON parse failed', parseError);
+    throw new Error(`Proxy returned non-JSON response: ${rawText.slice(0, 200)}`);
+  }
+
+  if (!res.ok || data.error) {
+    console.error('[Gemini] proxy API error', data);
+    throw new Error(data.error || data.message || 'Gemini API error');
+  }
   return data;
 }
 
